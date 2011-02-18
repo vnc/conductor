@@ -1,8 +1,23 @@
 var http = require('http'),
+	fs = require('fs'),
 	router = require('choreographer').router(),
 	ec2 = require('aws-lib').createEC2Client(key, secretKey);
 
+//read config.json
+try {
+	var configJSON = fs.readFileSync(__dirname + "/config.json");
+	var config = JSON.parse(configJSON.toString());
+} catch(e) {
+	console.log("File config.json not found. Try: `cp config.json.sample config.json`");
+	console.error(e);
+}
 
+//setup default variables
+var port = (process.env.PORT || config.port) // use env var, otherwise use value from config.json
+	, awsKeySet = (process.env.AWS_KEY || config.aws_keys)
+	, simpledbKey = (process.env.AWS_SIMPLEDB_KEY || config.aws_simpledb_key)
+	, simpledbSecretKey = (process.env.AWS_SIMPLEDB_SECRET || config.aws_simpledb_secret_key);
+		
 // ec2 requests require the following URL format
 // create: http://0.0.0.0/ec2/<ACTION>?imageId=&instanceType&az=&kernelId=&ramDiskId=&secGroups=&userData=
 // where the correct domain is used and <ACTION> is replaced with

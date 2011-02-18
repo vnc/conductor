@@ -1,0 +1,10 @@
+{
+"port": 8081,
+"aws_keys": [
+	{ "name": "Dev", "keys": { "key": "akey", "keyForTheDevEnvironment": "aSecretKeyForTheDevEnvironment" } },
+	{ "name" : "Test", "keys": { "key": "keyForTheTestEnvironment", "secretKey": "aSecretKeyForTheTestEnvironment" } },
+	{ "name" : "Prod", "keys": { "key": "aKeyForTheProdEnvironment", "secretKey": "aSecretKeyForTheProdEnvironment" } }
+],
+"aws_simpledb_key":"aSimpleDbKeyThatCouldBeTheSameAsAbove",
+"aws_simpledb_secret_key":"aSimpleDbSecretKeyThatCouldBeTheSameAsAbove"
+}
