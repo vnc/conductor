@@ -1,0 +1,9 @@
+[submodule "lib/aws-lib"]
+	path = lib/aws-lib
+	url = https://github.com/mirkok/aws-lib.git
+[submodule "lib/choreographer"]
+	path = lib/choreographer
+	url = https://github.com/laughinghan/choreographer.git
+[submodule "lib/simpledb"]
+	path = lib/simpledb
+	url = https://github.com/rjrodger/simpledb.git
