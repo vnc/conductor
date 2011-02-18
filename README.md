@@ -2,7 +2,7 @@
 
 ## About
 
-Conductor is a simple web service to create, start, stop, and terminate EC2 instances. Conductor also allows you to define your own actions to perform on success and/or failure of the EC2 API request.
+Conductor is a simple node.js web service to create, start, stop, and terminate EC2 instances. Conductor also allows you to define your own actions to perform on success and/or failure of the EC2 API request.
 
 ## Dependencies
 
