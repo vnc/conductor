@@ -1,5 +1,7 @@
 # Conductor
 
+_Counductor is not fully working yet. First release will be in about a week (around 2/23/11)._
+
 ## About
 
 Conductor is a simple node.js web service to create, start, stop, and terminate EC2 instances. Conductor also allows you to define your own actions to perform on success and/or failure of the EC2 API request.
