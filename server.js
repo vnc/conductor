@@ -1,7 +1,7 @@
 var http = require('http'),
 	fs = require('fs'),
 	router = require('choreographer').router(),
-	ec2 = require('aws-lib').createEC2Client(key, secretKey);
+	aws = require('aws-lib');
 
 //read config.json
 try {
@@ -17,12 +17,15 @@ var port = (process.env.PORT || config.port) // use env var, otherwise use value
 	, awsKeySet = (process.env.AWS_KEY || config.aws_keys)
 	, simpledbKey = (process.env.AWS_SIMPLEDB_KEY || config.aws_simpledb_key)
 	, simpledbSecretKey = (process.env.AWS_SIMPLEDB_SECRET || config.aws_simpledb_secret_key);
-		
+
+// create ec2 client object based on the number of keys in the key set...
+
 // ec2 requests require the following URL format
 // create: http://0.0.0.0/ec2/<ACTION>?imageId=&instanceType&az=&kernelId=&ramDiskId=&secGroups=&userData=
 // where the correct domain is used and <ACTION> is replaced with
 // one of create, start, stop, or terminate
-// TODO: allow comma separated list of instance IDs also
+// TODO: handle comma separated list of instance IDs
+// TODO: handle comma separated list of security groups
 router.get('/ec2/*', function(req, res, action) {
 	var u = url.parse(req.url, true);
 	var q = u.query;
@@ -68,4 +71,4 @@ var notFound = function(req, res) {
 	res.end('404: Whatever you\'re trying to do isn\'t going to work here.');
 };
 
-http.createServer(router).listen(8080);
+http.createServer(router).listen(port);
