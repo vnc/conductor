@@ -18,10 +18,68 @@ var port = (process.env.PORT || config.port) // use env var, otherwise use value
 	, simpledbKey = (process.env.AWS_SIMPLEDB_KEY || config.aws_simpledb_key)
 	, simpledbSecretKey = (process.env.AWS_SIMPLEDB_SECRET || config.aws_simpledb_secret_key);
 
-// create ec2 client object based on the number of keys in the key set...
+var getKeys = function(env, awsKeySet) {
+	for (var i = 0; i < awsKeySet.length; i++) {
+		if (awsKeySet[i].name == env) {
+			return { key: awsKeySet[i].key, secretKey: awsKeySet[i].secretKey };
+		}
+	}
+};
+
+// create EC2 instances
+var createInstances = function(params, callback) {
+	var keys = getKeys(params.env, awsKeySet);
+	var ec2 = aws.createEC2Client(keys.key, keys.secretKey);
+	
+	ec2.call('RunInstances', {/* put some params in here */}, function(result) {
+		// parse the result to determine what httpCode to send back
+		// parse the result to determine what message to send back
+		callback(httpCode, message);
+	});
+};
+
+// start up existing EC2 instances
+var startInstances = function(params, callback) {
+	var keys = getKeys(params.env, awsKeySet);
+	var ec2 = aws.createEC2Client(keys.key, keys.secretKey);
+	
+	ec2.call('StartInstances', {'instanceId.1': params.instanceId}, function(result) {
+		// parse the result to determine what httpCode to send back
+		// parse the result to determine what message to send back
+		callback(httpCode, callback);
+	});
+};
+
+// stop EC2 instance so that it can be re-start later
+var stopInstances = function(params, callback) {
+	var keys = getKeys(params.env, awsKeySet);
+	var ec2 = aws.createEC2Client(keys.key, keys.secretKey);
+	
+	ec2.call('StopInstances', {'instanceId.1': params.instanceId}, function(result) {
+		// parse the result to determine what httpCode to send back
+		// parse the result to determine what message to send back
+		callback(httpCode, callback);
+	});
+};
+
+// terminate EC2 instance so that it cannot be started again
+var terminateInstances = function(params, callback) {
+	var keys = getKeys(params.env, awsKeySet);
+	var ec2 = aws.createEC2Client(keys.key, keys.secretKey);
+	
+	ec2.call('TerminateInstances', {'instanceId.1': params.instanceId}, function(result) {
+		// parse the result to determine what httpCode to send back
+		// parse the result to determine what message to send back
+		callback(httpCode, callback);
+	});
+};
+
+/////////////////////////////////////////////
+// ROUTES
+/////////////////////////////////////////////
 
 // ec2 requests require the following URL format
-// create: http://0.0.0.0/ec2/<ACTION>?imageId=&instanceType&az=&kernelId=&ramDiskId=&secGroups=&userData=
+// create: http://0.0.0.0/ec2/<ACTION>?env=&imageId=&instanceType&az=&kernelId=&ramDiskId=&secGroups=&userData=
 // where the correct domain is used and <ACTION> is replaced with
 // one of create, start, stop, or terminate
 // TODO: handle comma separated list of instance IDs
