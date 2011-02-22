@@ -7,3 +7,9 @@
 [submodule "lib/simpledb"]
 	path = lib/simpledb
 	url = https://github.com/rjrodger/simpledb.git
+[submodule "lib/sax"]
+	path = lib/sax
+	url = https://github.com/isaacs/sax-js.git
+[submodule "lib/xml2js"]
+	path = lib/xml2js
+	url = https://github.com/maqr/node-xml2js.git
