@@ -13,3 +13,6 @@
 [submodule "lib/xml2js"]
 	path = lib/xml2js
 	url = https://github.com/maqr/node-xml2js.git
+[submodule "lib/Nodemailer"]
+	path = lib/Nodemailer
+	url = https://github.com/andris9/Nodemailer.git

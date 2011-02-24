@@ -12,11 +12,11 @@ Conductor is a simple node.js web service to create, start, stop, and terminate 
  * [node.js](https://github.com/ry/node)
 
 #### The dependencies below are installed automatically (as git submodules) using the installation instructions below.
- * [choreogrpaher](https://github.com/laughinghan/choreographer)
- * [aws-lib](https://github.com/mirkok/aws-lib)
- * [simpledb](https://github.com/rjrodger/simpledb)
- * [xml2js](https://github.com/maqr/node-xml2js/)
- * [sax](https://github.com/isaacs/sax-js/)
+ * [choreogrpaher](https://github.com/laughinghan/choreographer) (simple request router)
+ * [aws-lib](https://github.com/mirkok/aws-lib) (speaks to the EC2 api)
+ * [simpledb](https://github.com/rjrodger/simpledb) (needed only for server.example.js)
+ * [xml2js](https://github.com/maqr/node-xml2js/) (needed only for server.example.js)
+ * [sax](https://github.com/isaacs/sax-js/) (needed only for server.example.js)
 
 ## Installation
 
@@ -26,14 +26,19 @@ Conductor is a simple node.js web service to create, start, stop, and terminate 
 	# Update submodules
 	$ git submodule update --init --recursive
 
+	# open conductor/lib/aws-lib/lib/ec2.js
+	# change the date on line 25 to 2010-11-15
+	# if you don't do this, instance tags will not be set or read
+
+	# Copy server.default.js
+	$ cp server.default.js server.js
+
     # Copy the default configuration file
 	# and add your AWS account credentials
 	# note that credentials are defined separately for ec2 and simpledb
     $ cp config.json.sample config.json
 
-	# open conductor/lib/aws-lib/lib/ec2.js
-	# change the date on line 25 to 2010-11-15
-	# if you don't do this, instance tags will not be set or read
+	# Look at server.example.js for how the before and after actions can be used
 
 ## Running
 

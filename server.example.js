@@ -1,7 +1,8 @@
 require.paths.unshift(__dirname + '/lib');
 require.paths.unshift(__dirname + '/lib/xml2js/lib');
 
-var http = require('http'),
+var sys = require('sys'),
+	http = require('http'),
 	fs = require('fs'),
 	conductor = require('conductor'),
 	aws = require('aws-lib'),
@@ -24,23 +25,38 @@ var port = (process.env.PORT || config.port) // use env var, otherwise use value
 	
 var sdb = new simpledb.SimpleDB({ keyid: simpledbKey, secret: simpledbSecretKey, secure: true });
 
-var isOwner = function(instanceId, username) {
-	var query = "select CreatedBy from VncAwsInstanceMetadata where itemName() = '" + instanceId + "'";
-	return sdb.select(query, {}, function(err, result, meta) {
-		console.log("isOwner: " + result);
-		return ( result[0].CreatedBy == username );
+var isOwner = function(instanceId, username, callback) {
+	return sdb.getItem('VncAwsInstanceMetadata', instanceId, {}, function(err, result, meta) {
+		if (err) sys.log("Exception in isOwner: " + JSON.stringify(err));
+		console.log("isOwner " + (result.CreatedBy == username));
+		callback( result.CreatedBy == username );
 	});
 };
 
 // all before functions receive a single parameter
 // 1) the query string as a generic object
 conductor.beforeCreate = null;
-conductor.beforeStart = null;
+conductor.beforeStart = function(q, callback) {
+	isOwner(q.instanceId, 'AWS\\chris.castle', function(result) {
+		if (!result) callback({ httpCode: 403, message: 'You cannot start instance ' + q.instanceId + ' because you do not own it.' });
+		else callback({});
+	});
+};
 // TODO: replace with username of currently authenticated user
-conductor.beforeStop = function(q) { return false; }//isOwner(q.instanceId, 'aws\\chris.castle'); };
-conductor.beforeTerminate = null;
+conductor.beforeStop = function(q, callback) {
+	isOwner(q.instanceId, 'AWS\\chris.castle', function(result) {
+		if (!result) callback({ httpCode: 403, message: 'You cannot stop instance ' + q.instanceId + ' because you do not own it.' });
+		else callback({});
+	});
+};
+conductor.beforeTerminate = function(q, callback) {
+	isOwner(q.instanceId, 'AWS\\chris.castle', function(result) {
+		if (!result) callback({ httpCode: 403, message: 'You cannot terminate instance ' + q.instanceId + ' because you do not own it.' });
+		else callback({});
+	});
+};
 
-// all after function receive three parameters
+// all after functions receive three parameters
 // 1) the query string as a generic object
 // 2) the http return code as an int
 // 3) the http return message as a string
@@ -53,7 +69,7 @@ conductor.afterStart = function(q, httpCode, msg) {
 			Date: (new Date()).toUTCString()
 		},
 		function(err, result, meta) {
-			if (err) console.error(err);
+			if (err) sys.log(err);
 		}
 	);
 };
@@ -65,7 +81,7 @@ conductor.afterStop = function(q, httpCode, msg) {
 			Date: (new Date()).toUTCString()
 		},
 		function(err, result, meta) {
-			if (err) console.error(err);
+			if (err) sys.log(err);
 		}
 	);
 };
@@ -77,7 +93,7 @@ conductor.afterTerminate = function(q, httpCode, msg) {
 			Date: (new Date()).toUTCString()
 		},
 		function(err, result, meta) {
-			if (err) console.error(err);
+			if (err) sys.log(err);
 		}
 	);
 };
