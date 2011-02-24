@@ -60,7 +60,18 @@ conductor.beforeTerminate = function(q, callback) {
 // 1) the query string as a generic object
 // 2) the http return code as an int
 // 3) the http return message as a string
-conductor.afterCreate = null;
+conductor.afterCreate = function(q, httpCode, msg) {
+	if (httpCode != 200 || msg.indexOf('running') >= 0) return; // don't log to simpledb on failure or if it's already running
+	sdb.putItem('test_VncAwsOperationHistory', "" + (new Date()).getTime() + Math.floor(Math.random()*10001),
+		{
+			Message: 'The instance ' + q.instanceId + ' has been successfully created.',
+			Date: (new Date()).toUTCString()
+		},
+		function(err, result, meta) {
+			if (err) sys.log(err);
+		}
+	);
+};
 conductor.afterStart = function(q, httpCode, msg) {
 	if (httpCode != 200 || msg.indexOf('running') >= 0) return; // don't log to simpledb on failure or if it's already running
 	sdb.putItem('test_VncAwsOperationHistory', "" + (new Date()).getTime() + Math.floor(Math.random()*10001),

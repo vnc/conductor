@@ -1,10 +1,18 @@
 {
 "port": 8081,
 "aws_keys": [
-	{ "name": "Dev", "keys": { "key": "akey", "keyForTheDevEnvironment": "aSecretKeyForTheDevEnvironment" } },
-	{ "name" : "Test", "keys": { "key": "keyForTheTestEnvironment", "secretKey": "aSecretKeyForTheTestEnvironment" } },
-	{ "name" : "Prod", "keys": { "key": "aKeyForTheProdEnvironment", "secretKey": "aSecretKeyForTheProdEnvironment" } }
+	{ "name": "DEV", "keys": { "key": "keyForTheDevEnvironment", "secretKey": "aSecretKeyForTheDevEnvironment" } },
+	{ "name" : "TEST", "keys": { "key": "keyForTheTestEnvironment", "secretKey": "aSecretKeyForTheTestEnvironment" } },
+	{ "name" : "PROD", "keys": { "key": "KeyForTheProdEnvironment", "secretKey": "aSecretKeyForTheProdEnvironment" } }
 ],
 "aws_simpledb_key":"aSimpleDbKeyThatCouldBeTheSameAsAbove",
-"aws_simpledb_secret_key":"aSimpleDbSecretKeyThatCouldBeTheSameAsAbove"
+"aws_simpledb_secret_key":"aSimpleDbSecretKeyThatCouldBeTheSameAsAbove",
+"email": {
+	"smtp": "smtp.gmail.com",
+	"port": 465,
+	"ssl": true,
+	"use_auth": true,
+	"user": "sample@gmail.com",
+	"pass": "7r1cky"
+}
 }

@@ -1,7 +1,5 @@
 # Conductor
 
-_Counductor is not fully working yet. First release will be in about a week (around 2/23/11)._
-
 ## About
 
 Conductor is a simple node.js web service to create, start, stop, and terminate EC2 instances. Conductor also allows you to define your own actions to perform on success and/or failure of the EC2 API request.
@@ -14,6 +12,7 @@ Conductor is a simple node.js web service to create, start, stop, and terminate 
 #### The dependencies below are installed automatically (as git submodules) using the installation instructions below.
  * [choreogrpaher](https://github.com/laughinghan/choreographer) (simple request router)
  * [aws-lib](https://github.com/mirkok/aws-lib) (speaks to the EC2 api)
+ * [Nodemailer](https://github.com/andris9/Nodemailer) (to send notifications once instance has started/stopped)
  * [simpledb](https://github.com/rjrodger/simpledb) (needed only for server.example.js)
  * [xml2js](https://github.com/maqr/node-xml2js/) (needed only for server.example.js)
  * [sax](https://github.com/isaacs/sax-js/) (needed only for server.example.js)
@@ -34,12 +33,14 @@ Conductor is a simple node.js web service to create, start, stop, and terminate 
 	$ cp server.default.js server.js
 
     # Copy the default configuration file
-	# and add your AWS account credentials
-	# note that credentials are defined separately for ec2 and simpledb
+	# and add your AWS account credentials and mail server info
+	# simpledb credentials are needed to run server.example.js
     $ cp config.json.sample config.json
 
-	# Look at server.example.js for how the before and after actions can be used
+	# Look at server.example.js for how the "before" and "after" actions can be defined and used
 
 ## Running
 
-	$ node server.js
+	$ node server.default.js
+	# or for a more complex setup do
+	$ node server.example.js
