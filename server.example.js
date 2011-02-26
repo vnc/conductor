@@ -64,10 +64,10 @@ conductor.beforeTerminate = function(q, callback) {
 // 3) the http return message as a string
 conductor.afterCreate = function(q, httpCode, msg) {
 	if (httpCode != 200 || msg.indexOf('running') >= 0) return; // don't log to simpledb on failure or if it's already running
-	var msg = JSON.parse(msg); // make it an object so we can access properties instead of doing text parsing
+	var msgObj = JSON.parse(msg); // make it an object so we can access properties instead of doing text parsing
 	sdb.putItem('test_VncAwsOperationHistory', "" + (new Date()).getTime() + Math.floor(Math.random()*10001),
 		{
-			Message: 'The instance ' + q.instanceId + ' has been successfully created by ' + msg.message.user + '.',
+			Message: 'The instance ' + q.instanceId + ' has been successfully created by ' + msgObj.data.user + '.',
 			Date: (new Date()).toUTCString()
 		},
 		function(err, result, meta) {
@@ -77,10 +77,10 @@ conductor.afterCreate = function(q, httpCode, msg) {
 };
 conductor.afterStart = function(q, httpCode, msg) {
 	if (httpCode != 200 || msg.indexOf('running') >= 0) return; // don't log to simpledb on failure or if it's already running
-	var msg = JSON.parse(msg); // make it an object so we can access properties instead of doing text parsing
+	var msgObj = JSON.parse(msg); // make it an object so we can access properties instead of doing text parsing
 	sdb.putItem('test_VncAwsOperationHistory', "" + (new Date()).getTime() + Math.floor(Math.random()*10001),
 		{
-			Message: 'The instance ' + q.instanceId + ' has been successfully started by ' + msg.message.user + '.',
+			Message: 'The instance ' + q.instanceId + ' has been successfully started by ' + msgObj.data.user + '.',
 			Date: (new Date()).toUTCString()
 		},
 		function(err, result, meta) {
@@ -90,10 +90,10 @@ conductor.afterStart = function(q, httpCode, msg) {
 };
 conductor.afterStop = function(q, httpCode, msg) {
 	if (httpCode != 200 || msg.indexOf('stopped') >= 0) return; // don't log to simpledb on failure or if it's already stopped
-	var msg = JSON.parse(msg); // make it an object so we can access properties instead of doing text parsing
+	var msgObj = JSON.parse(msg); // make it an object so we can access properties instead of doing text parsing
 	sdb.putItem('test_VncAwsOperationHistory', "" + (new Date()).getTime() + Math.floor(Math.random()*10001),
 		{
-			Message: 'The instance ' + q.instanceId + ' has been successfully stopped by ' + msg.message.user + '.',
+			Message: 'The instance ' + q.instanceId + ' has been successfully stopped by ' + msgObj.data.user + '.',
 			Date: (new Date()).toUTCString()
 		},
 		function(err, result, meta) {
@@ -103,10 +103,10 @@ conductor.afterStop = function(q, httpCode, msg) {
 };
 conductor.afterTerminate = function(q, httpCode, msg) {
 	if (httpCode != 200 || msg.indexOf('terminated') >= 0) return; // don't log to simpledb on failure or if it's already terminated
-	var msg = JSON.parse(msg); // make it an object so we can access properties instead of doing text parsing
+	var msgObj = JSON.parse(msg); // make it an object so we can access properties instead of doing text parsing
 	sdb.putItem('test_VncAwsOperationHistory', "" + (new Date()).getTime() + Math.floor(Math.random()*10001),
 		{
-			Message: 'The instance ' + q.instanceId + ' has been successfully terminated by ' + msg.message.user + '.',
+			Message: 'The instance ' + q.instanceId + ' has been successfully terminated by ' + msgObj.data.user + '.',
 			Date: (new Date()).toUTCString()
 		},
 		function(err, result, meta) {
