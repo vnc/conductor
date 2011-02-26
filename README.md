@@ -2,7 +2,7 @@
 
 ## About
 
-Conductor is a simple node.js web service to create, start, stop, and terminate EC2 instances. Conductor also allows you to define your own actions to perform on success and/or failure of the EC2 API request.
+Conductor is a simple node.js web service to create, start, stop, and terminate EC2 instances. Conductor also allows you to define your own actions to perform on success and/or failure of the EC2 API request.  For instance you can do an authorization check on 'user.bob' before allowing an instance to be started.  And you could then log the fact that an instance was started by 'user.bob' after the request has completed.
 
 ## Dependencies
 
@@ -12,7 +12,7 @@ Conductor is a simple node.js web service to create, start, stop, and terminate 
 #### The dependencies below are installed automatically (as git submodules) using the installation instructions below.
  * [choreogrpaher](https://github.com/laughinghan/choreographer) (simple request router)
  * [aws-lib](https://github.com/mirkok/aws-lib) (speaks to the EC2 api)
- * [Nodemailer](https://github.com/andris9/Nodemailer) (to send notifications once instance has started/stopped)
+ * [Nodemailer](https://github.com/andris9/Nodemailer) (to send email notifications once instance has started/stopped)
  * [simpledb](https://github.com/rjrodger/simpledb) (needed only for server.example.js)
  * [xml2js](https://github.com/maqr/node-xml2js/) (needed only for server.example.js)
  * [sax](https://github.com/isaacs/sax-js/) (needed only for server.example.js)
@@ -41,6 +41,7 @@ Conductor is a simple node.js web service to create, start, stop, and terminate 
 
 ## Running
 
-	$ node server.default.js
+	$ node server.js
 	# or for a more complex setup do
 	$ node server.example.js
+	# but note the additional dependencies mentioned above for this
