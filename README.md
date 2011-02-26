@@ -12,6 +12,7 @@ Conductor is a simple node.js web service to create, start, stop, and terminate 
  * simple JSON response
  * easily add custom validation or authorization checks before making AWS EC2 api call
  * easily add custom actions on success or failure of AWS EC2 api request
+ * requires HTTP AUTH Basic (set username and password in config.json.sample)
  * can use LDAP and Active Directory as custom authorization (see server.example.json)
  * can use HTTPS or HTTP (see server.example.js)
 
@@ -38,7 +39,7 @@ Conductor is a simple node.js web service to create, start, stop, and terminate 
 
 	# open conductor/lib/aws-lib/lib/ec2.js
 	# change the date on line 25 to 2010-11-15
-	# if you don't do this, instance tags will not be set or read
+	# if you don't do this, you'll get exceptions
 
 	# Copy server.default.js
 	$ cp server.default.js server.js
