@@ -4,10 +4,21 @@
 
 Conductor is a simple node.js web service to create, start, stop, and terminate EC2 instances. Conductor also allows you to define your own actions to perform on success and/or failure of the EC2 API request.  For instance you can do an authorization check on 'user.bob' before allowing an instance to be started.  And you could then log the fact that an instance was started by 'user.bob' after the request has completed.
 
+## Features
+ * simplify EC2 api requests to create/start/stop/terminate EC2 instaces
+ * one api call (instead of two with AWS EC2 api) to create instance and assign instance tags
+ * supports multiple AWS accounts natively (see config.json.sample)
+ * optional email notification when instance has reached requested state (e.g. stopping -> stopped)
+ * simple JSON response
+ * easily add custom validation or authorization checks before making AWS EC2 api call
+ * easily add custom actions on success or failure of AWS EC2 api request
+ * can use LDAP and Active Directory as custom authorization (see server.example.json)
+ * can use HTTPS or HTTP (see server.example.js)
+
 ## Dependencies
 
 #### Dependencies you need to figure out
- * [node.js](https://github.com/ry/node)
+ * [node.js](https://github.com/ry/node) (v0.4.1)
 
 #### The dependencies below are installed automatically (as git submodules) using the installation instructions below.
  * [choreogrpaher](https://github.com/laughinghan/choreographer) (simple request router)

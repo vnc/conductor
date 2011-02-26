@@ -1,2 +1,7 @@
 config.json
 server.js
+ssl.crt
+ssl.csr
+ssl.key
+sub.class1.server.ca.pem
+ca.pem

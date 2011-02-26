@@ -14,21 +14,23 @@ try {
 	var config = JSON.parse(configJSON.toString());
 	conductor.config = config;
 } catch(e) {
-	console.log("File config.json not found. Try: `cp config.json.sample config.json`");
-	console.error(e);
+	sys.log("File config.json not found. Try: `cp config.json.sample config.json`");
+	sys.log(e);
 }
 
 //setup default variables
 var port = (process.env.PORT || config.port) // use env var, otherwise use value from config.json
 	, simpledbKey = (process.env.AWS_SIMPLEDB_KEY || config.aws_simpledb_key)
 	, simpledbSecretKey = (process.env.AWS_SIMPLEDB_SECRET || config.aws_simpledb_secret_key);
-	
+
+// uncomment this to enable https on port 443
+//var https = require('https'), port = 443;
+
 var sdb = new simpledb.SimpleDB({ keyid: simpledbKey, secret: simpledbSecretKey, secure: true });
 
 var isOwner = function(instanceId, username, callback) {
 	return sdb.getItem('VncAwsInstanceMetadata', instanceId, {}, function(err, result, meta) {
 		if (err) sys.log("Exception in isOwner: " + JSON.stringify(err));
-		console.log("isOwner " + (result.CreatedBy == username));
 		callback( result.CreatedBy == username );
 	});
 };
@@ -109,5 +111,14 @@ conductor.afterTerminate = function(q, httpCode, msg) {
 	);
 };
 
+// uncomment this to enable https
+// also comment out the http.createServer... line below
+/*var sslOptions = {
+	ca: fs.readFileSync('sub.class1.server.ca.pem'),
+	key: fs.readFileSync('ssl.key'),
+	cert: fs.readFileSync('ssl.crt')
+};
+
+https.createServer(sslOptions, conductor.router).listen(port); */
 http.createServer(conductor.router).listen(port);
-console.log('Listening on http://0.0.0.0:' + port);
+sys.log('Listening on http://0.0.0.0:' + port);
