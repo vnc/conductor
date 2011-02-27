@@ -16,3 +16,6 @@
 [submodule "lib/Nodemailer"]
 	path = lib/Nodemailer
 	url = https://github.com/andris9/Nodemailer.git
+[submodule "lib/uuid"]
+	path = lib/uuid
+	url = https://github.com/broofa/node-uuid.git

@@ -28,6 +28,7 @@ Conductor is a simple node.js web service to create, start, stop, and terminate 
  * [simpledb](https://github.com/rjrodger/simpledb) (needed only for server.example.js)
  * [xml2js](https://github.com/maqr/node-xml2js/) (needed only for server.example.js)
  * [sax](https://github.com/isaacs/sax-js/) (needed only for server.example.js)
+ * [node-uuid](https://github.com/broofa/node-uuid) (needed only for server.example.js)
 
 ## Installation
 
