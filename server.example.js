@@ -190,4 +190,4 @@ conductor.afterTerminate = function(q, httpCode, msg) {
 
 https.createServer(sslOptions, conductor.router).listen(port); */
 http.createServer(conductor.router).listen(port);
-sys.log('Listening on ' + ((https) ? 'https' : 'http') + '://0.0.0.0:' + port);
+sys.log('Listening on http://0.0.0.0:' + port);
