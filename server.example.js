@@ -114,13 +114,17 @@ conductor.afterCreate = function(q, httpCode, msg) {
 	var msgObj = JSON.parse(msg); // make it an object so we can access properties instead of doing text parsing
 	
 	// add item to operation history simpledb domain
-	sdb.putItem('test_VncAwsOperationHistory', "" + uuid().toLowerCase(),
+	sdb.putItem('VncAwsOperationHistory', "" + uuid().toLowerCase(),
 		{
-			Message: 'The instance ' + q.instanceId + ' has been successfully created by ' + msgObj.data.user + '.',
-			Date: (new Date()).format('isoDateTime')
+			Message: 'Instance(s): ' + q.instanceId + ' has been successfully created by ' + msgObj.data.user + ' via VNC API.',
+			Date: (new Date()).format('isoDateTime'),
+			Environment: q.env
 		},
 		function(err, result, meta) {
-			if (err) sys.log(err);
+			if (err) {
+				sys.log("Error writing to VncAwsOperationHistory");
+				console.log(err);
+			}
 		}
 	);
 	
@@ -145,8 +149,9 @@ conductor.afterStart = function(q, httpCode, msg) {
 	var msgObj = JSON.parse(msg); // make it an object so we can access properties instead of doing text parsing
 	sdb.putItem('test_VncAwsOperationHistory', "" + uuid().toLowerCase(),
 		{
-			Message: 'The instance ' + q.instanceId + ' has been successfully started by ' + msgObj.data.user + '.',
-			Date: (new Date()).format('isoDateTime')
+			Message: 'Instance: ' + q.instanceId + ' has been successfully started by ' + msgObj.data.user + ' via VNC API.',
+			Date: (new Date()).format('isoDateTime'),
+			Environment: q.env
 		},
 		function(err, result, meta) {
 			if (err) sys.log(err);
@@ -158,8 +163,9 @@ conductor.afterStop = function(q, httpCode, msg) {
 	var msgObj = JSON.parse(msg); // make it an object so we can access properties instead of doing text parsing
 	sdb.putItem('test_VncAwsOperationHistory', "" + uuid().toLowerCase(),
 		{
-			Message: 'The instance ' + q.instanceId + ' has been successfully stopped by ' + msgObj.data.user + '.',
-			Date: (new Date()).format('isoDateTime')
+			Message: 'Instance: ' + q.instanceId + ' has been successfully stopped by ' + msgObj.data.user + ' via VNC API.',
+			Date: (new Date()).format('isoDateTime'),
+			Environment: q.env
 		},
 		function(err, result, meta) {
 			if (err) sys.log(err);
@@ -171,8 +177,9 @@ conductor.afterTerminate = function(q, httpCode, msg) {
 	var msgObj = JSON.parse(msg); // make it an object so we can access properties instead of doing text parsing
 	sdb.putItem('test_VncAwsOperationHistory', "" + uuid().toLowerCase(),
 		{
-			Message: 'The instance ' + q.instanceId + ' has been successfully terminated by ' + msgObj.data.user + '.',
-			Date: (new Date()).format('isoDateTime')
+			Message: 'Instance: ' + q.instanceId + ' has been successfully terminated by ' + msgObj.data.user + ' via VNC API.',
+			Date: (new Date()).format('isoDateTime'),
+			Environment: q.env
 		},
 		function(err, result, meta) {
 			if (err) sys.log(err);
