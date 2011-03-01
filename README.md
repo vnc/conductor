@@ -29,6 +29,7 @@ Conductor is a simple node.js web service to create, start, stop, and terminate 
  * [xml2js](https://github.com/maqr/node-xml2js/) (needed only for server.example.js)
  * [sax](https://github.com/isaacs/sax-js/) (needed only for server.example.js)
  * [node-uuid](https://github.com/broofa/node-uuid) (needed only for server.example.js)
+ * [node-ldapauth](https://github.com/joewalnes/node-ldapauth) (needed only for server.example.js)
 
 ## Installation
 
@@ -49,6 +50,8 @@ Conductor is a simple node.js web service to create, start, stop, and terminate 
 	# and add your AWS account credentials and mail server info
 	# simpledb credentials are needed to run server.example.js
     $ cp config.json.sample config.json
+
+	# some instructions on how to use ldap authentication...
 
 	# Look at server.example.js for how the "before" and "after" actions can be defined and used
 

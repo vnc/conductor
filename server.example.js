@@ -8,7 +8,8 @@ var sys = require('sys'),
 	aws = require('aws-lib'),
 	simpledb = require('simpledb/lib/simpledb'),
 	uuid = require('uuid'),
-	dt = require('date-util');
+	dt = require('date-util'),
+	ldapauth = require('ldapauth/ldapauth.node');
 
 //read config.json
 try {
@@ -185,6 +186,20 @@ conductor.afterTerminate = function(q, httpCode, msg) {
 			if (err) sys.log(err);
 		}
 	);
+};
+
+// override default authentication scheme with ldap authentication
+conductor.authenticationScheme = function(username, password, callback) {
+	var host = config.ldap.host,
+		port = config.ldap.port;
+
+		ldapauth.authenticate(host, port, username, password, function(err, result) {
+			if (err) {
+				callback(err, null);
+			} else {
+				callback(null, result);
+			}
+		});
 };
 
 // uncomment this to enable https
