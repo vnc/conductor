@@ -105,6 +105,10 @@ conductor.beforeTerminate = function(q, username, callback) {
 		else callback({});
 	});
 };
+conductor.beforeAssociateAddress = function(q, username, callback) {
+	// what type of user is allowed to associate elastic IP addresses with instances?
+	callback({});
+};
 
 // all after functions receive three parameters
 // 1) the query string as a generic object
@@ -179,6 +183,20 @@ conductor.afterTerminate = function(q, httpCode, msg) {
 	sdb.putItem('test_VncAwsOperationHistory', "" + uuid().toLowerCase(),
 		{
 			Message: 'Instance: ' + q.instanceId + ' has been successfully terminated by ' + msgObj.data.user + ' via VNC API.',
+			Date: (new Date()).format('isoDateTime'),
+			Environment: q.env
+		},
+		function(err, result, meta) {
+			if (err) sys.log(err);
+		}
+	);
+};
+conductor.afterAssociateAddress = function(q, httpCode, msg) {
+	if (httpCode != 200 || msg.indexOf('success') < 1) return; // don't log to simpledb on failure
+	var msgObj = JSON.parse(msg); // make it an object so we can access properties instead of doing text parsing
+	sdb.putItem('test_VnvAwsOperationHistory', "" + uuid().toLowerCase(),
+		{
+			Message: 'ElasticIP: ' + q.ip + ' has been successfully associated to instance ID ' + q.instanceId + ' by ' + msgObj.user + ' via VNC API.',
 			Date: (new Date()).format('isoDateTime'),
 			Environment: q.env
 		},

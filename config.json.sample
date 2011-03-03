@@ -2,6 +2,10 @@
 "port": 8081,
 "username": "user",
 "password": "pass",
+"ldap": {
+	"host": "hostname",
+	"port": 389
+}
 "aws_keys": [
 	{ "name": "DEV", "keys": { "key": "keyForTheDevEnvironment", "secretKey": "aSecretKeyForTheDevEnvironment" } },
 	{ "name" : "TEST", "keys": { "key": "keyForTheTestEnvironment", "secretKey": "aSecretKeyForTheTestEnvironment" } },

@@ -25,6 +25,7 @@ conductor.beforeCreate = null;
 conductor.beforeStart = null;
 conductor.beforeStop = null;
 conductor.beforeTerminate = null;
+conductor.beforeAssociateAddress = null;
 
 // all after function receive three parameters
 // 1) the query string as a generic object
@@ -34,6 +35,7 @@ conductor.afterCreate = null;
 conductor.afterStart = null;
 conductor.afterStop = null;
 conductor.afterTerminate = null;
+conductor.afterAssociateAddress = null;
 
 http.createServer(conductor.router).listen(port);
 console.log('Listening on http://0.0.0.0:' + port);
