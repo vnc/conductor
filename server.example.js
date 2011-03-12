@@ -119,9 +119,10 @@ conductor.beforeCreate = function(q, username, callback) {
 					callback({ httpCode: 400, message: 'Error querying instance configurations.' });
 				}
 			} else {
-				callback({ httpCode: 403, message: 'Error validating instance creation parameters.' });
 				sys.log("Error reading instance config from SimpleDB:");
 				console.log(err);
+				callback({ httpCode: 403, message: 'Error validating instance creation parameters.' });
+
 			}
 		});
 	}
