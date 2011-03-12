@@ -35,7 +35,7 @@ var sdb = new simpledb.SimpleDB({ keyid: simpledbKey, secret: simpledbSecretKey,
 
 // execute callback(true) if username is admin or instance was created by username
 var isAllowed = function(instanceId, username, env, callback) {
-	var adminCheck = isAdmin(username, env);
+	var adminCheck = isEnvAdmin(username, env);
 	if (adminCheck) { callback(true); }
 	else {
 		return sdb.getItem('VncAwsInstanceMetadata', instanceId, {}, function(err, result, meta) {
@@ -46,8 +46,9 @@ var isAllowed = function(instanceId, username, env, callback) {
 };
 
 // return true if user is admin within env account
-var isAdmin = function(username, env) {
-	var command = "/home/ec2-user/Projects/test/getGroups.sh " + username;
+var isEnvAdmin = function(username, env) {
+	var user = username.split('\\')[1]; // remove 'aws\' domain prefix from username
+	var command = "/home/ec2-user/Projects/conductor/getGroups.sh " + user;
 	exec(command, function(err, stdout, stderr) {
 		if (err) {
 			sys.log("Error in isAdmin: ");
@@ -61,51 +62,69 @@ var isAdmin = function(username, env) {
 	});
 };
 
+// return true if user is 'user' within env account
+var isEnvUser = function(username, env) {
+	if (isEnvAdmin(username, env)) return true;
+	var user = username.split('\\')[1]; // remove 'aws\' domain prefix from username
+	var command = "/home/ec2-user/Projects/conductor/getGroups.sh " + user;
+	exec(command, function(err, stdout, stderr) {
+		if (err) {
+			sys.log("Error in isEnvUser: ");
+			console.log(err);
+			return false;
+		} else {
+			var test = "memberOf: CN=" + env + "Users";
+			if ( (stdout.toLowerCase()).indexOf((test.toLowerCase()) ) >= 0) return true;
+			else return false;
+		}
+	});
+};
+
 // all before functions receive a single parameter
 // 1) the query string as a generic object
 conductor.beforeCreate = function(q, username, callback) {
-	// check that user is authorized to start instance with requested configuration
-		// if user is not a member of q.env AD group
-		// callback({ httpCode: 403, message: 'You are not authorized to create an instance with that configuration.' });
-		// else continue to next check
+	// if user is not a member of 'users' group or 'admins' group in q.env account
+	if (!isEnvUser(username, q.env)) {
+		callback({ httpCode: 403, message: 'You are not authorized to create an instance with that configuration.' });
+	} else {
+		// required: q.env, q.displayName (freakin' simpledb library bug won't let me use parens in simpledb query so can't use imageName)
+		//if (!q.env || !q.imageName || !q.name || !q.description)
+		//	callback({ httpCode: 400, message: 'env, imageName, name, and description are required' });
+		// optional: q.az, q.instanceType, q.keyPair, q.userData, q.secGroups
 
-	// required: q.env, q.displayName (freakin' simpledb library bug won't let me use parens in simpledb query so can't use imageName)
-	//if (!q.env || !q.imageName || !q.name || !q.description)
-	//	callback({ httpCode: 400, message: 'env, imageName, name, and description are required' });
-	// optional: q.az, q.instanceType, q.keyPair, q.userData, q.secGroups
-	
-	// check that requested configuration is allowed
-	var selectStatement = 'select *' +
-						 ' from VncAwsInstanceCreation' +
-						 ' where Environment=\'' + q.env + '\'' +
-						 ' and DisplayName=\'' + q.displayName + '\'' +
-						 ((q.az) ? ' and AvailabilityZone=\'' + q.az + '\'': "") +
-						 ((q.instanceType) ? ' and PreferredInstanceSize=\'' + q.instanceType + '\'': "") +
-						 ((q.keyPair) ? ' and KeyPair=\'' + q.keyPair + '\'': "");
-	sdb.select(selectStatement, {}, function(err, result, meta) {
-		if(!err) {
-			if(result.length && result.length > 1) { // if more than 1 row returned, fail with error
-				callback({ httpCode: 400, message: 'Parameters provided identify more than one allowed instance configuration.' });
-			} else if (result.length && result.length == 0) { // if no rows returned, fail with error
-				callback({ httpCode: 400, message: 'Parameters provided do not identify any allowed instance configurations.' });
-			} else if (result.length && result.length == 1) { // if 1 row returned, set attributes of q and continue
-				// add a bunch of attributes to q so that they can be used to make the RunInstances EC2 api request
-				q.imageName = result[0]['$ItemName'];
-				q.imageId = result[0].AmiId;
-				q.az = result[0].AvailabilityZone;
-				q.instanceType = result[0].PreferredInstanceSize;
-				q.keyPair = result[0].KeyPair;
-				q.secGroups = result[0].SecurityGroups;
-				callback({});
+		// check that requested configuration is allowed
+		var selectStatement = 'select *' +
+							 ' from VncAwsInstanceCreation' +
+							 ' where Environment=\'' + q.env + '\'' +
+							 ' and DisplayName=\'' + q.displayName + '\'' +
+							 ((q.az) ? ' and AvailabilityZone=\'' + q.az + '\'': "") +
+							 ((q.instanceType) ? ' and PreferredInstanceSize=\'' + q.instanceType + '\'': "") +
+							 ((q.keyPair) ? ' and KeyPair=\'' + q.keyPair + '\'': "");
+		sdb.select(selectStatement, {}, function(err, result, meta) {
+			if(!err) {
+				if(result.length && result.length > 1) { // if more than 1 row returned, fail with error
+					callback({ httpCode: 400, message: 'Parameters provided identify more than one allowed instance configuration.' });
+				} else if (result.length && result.length == 0) { // if no rows returned, fail with error
+					callback({ httpCode: 400, message: 'Parameters provided do not identify any allowed instance configurations.' });
+				} else if (result.length && result.length == 1) { // if 1 row returned, set attributes of q and continue
+					// add a bunch of attributes to q so that they can be used to make the RunInstances EC2 api request
+					q.imageName = result[0]['$ItemName'];
+					q.imageId = result[0].AmiId;
+					q.az = result[0].AvailabilityZone;
+					q.instanceType = result[0].PreferredInstanceSize;
+					q.keyPair = result[0].KeyPair;
+					q.secGroups = result[0].SecurityGroups;
+					callback({});
+				} else {
+					callback({ httpCode: 400, message: 'Error querying instance configurations.' });
+				}
 			} else {
-				callback({ httpCode: 400, message: 'Error querying instance configurations.' });
+				callback({ httpCode: 403, message: 'Error validating instance creation parameters.' });
+				sys.log("Error reading instance config from SimpleDB:");
+				console.log(err);
 			}
-		} else {
-			callback({ httpCode: 403, message: 'Error validating instance creation parameters.' });
-			sys.log("Error reading instance config from SimpleDB:");
-			console.log(err);
-		}
-	});
+		});
+	}
 };
 conductor.beforeStart = function(q, username, callback) {
 	isAllowed(q.instanceId, username, q.env, function(result) {
