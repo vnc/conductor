@@ -39,8 +39,9 @@ var isAllowed = function(instanceId, username, env, callback) {
 		if (result == true) { callback( true ); }
 		else {
 			sdb.getItem('VncAwsInstanceMetadata', instanceId, {}, function(err, result, meta) {
-			if (err) sys.log("Exception in isAllowed: " + JSON.stringify(err));
-			callback( (result.CreatedBy).toLowerCase() == (username).toLowerCase() );
+				if (err) sys.log("Exception in isAllowed: " + JSON.stringify(err));
+				callback( (result.CreatedBy).toLowerCase() == (username).toLowerCase() );
+			});
 		}
 	});
 };
