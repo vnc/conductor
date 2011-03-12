@@ -19,6 +19,3 @@
 [submodule "lib/uuid"]
 	path = lib/uuid
 	url = https://github.com/broofa/node-uuid.git
-[submodule "lib/ldapauth"]
-	path = lib/ldapauth
-	url = https://github.com/joewalnes/node-ldapauth.git
