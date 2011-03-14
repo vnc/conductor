@@ -256,19 +256,22 @@ conductor.afterAssociateAddress = function(q, httpCode, msg) {
 
 // override default authentication scheme with ldap authentication
 conductor.authenticationScheme = function(username, password, callback) {
+	username = username.replace(/([\\"'])/g, "\\$1").replace(/\0/g, "\\0");
+	password = password.replace(/([\\"'])/g, "\\$1").replace(/\0/g, "\\0");
 	var command = "/home/ec2-user/Projects/test/auth.sh " + username + " " + password;
 	
 	exec(command, function(err, stdout, stderr) {
 		if (err) {
 			// test for invalid credentials
 			var test = "Invalid credentials";
-			if ( (err.toLowerCase()).indexOf(test.toLowerCase()) ) callback(null, false);
+			err = err.toString();
+			if ( (err.toLowerCase()).indexOf(test.toLowerCase()) >= 0 ) callback(null, false);
 			// else there was an error but it wasn't invalid credentials. send error back.
 			else callback(err, null);
 		} else {
 			// test for valid credentials
 			var test = "Result: Success";
-			if ( (stdout.toLowerCase()).indexOf(test.toLowerCase()) ) callback(null, true);
+			if ( (stdout.toLowerCase()).indexOf(test.toLowerCase()) >= 0 ) callback(null, true);
 			// else credentials must have been invalid
 			else callback(null, false);
 		}
