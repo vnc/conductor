@@ -29,7 +29,7 @@ var port = (process.env.PORT || config.port) // use env var, otherwise use value
 	, simpledbSecretKey = (process.env.AWS_SIMPLEDB_SECRET || config.aws_simpledb_secret_key);
 
 // uncomment this to enable https on port 443
-//var https = require('https'), port = 443;
+var https = require('https'), port = 9000;
 
 var sdb = new simpledb.SimpleDB({ keyid: simpledbKey, secret: simpledbSecretKey, secure: true });
 
@@ -280,12 +280,12 @@ conductor.authenticationScheme = function(username, password, callback) {
 
 // uncomment this to enable https
 // also comment out the http.createServer... line below
-/*var sslOptions = {
-	ca: fs.readFileSync('sub.class1.server.ca.pem'),
+var sslOptions = {
+	ca: fs.readFileSync('ca.pem'),
 	key: fs.readFileSync('ssl.key'),
 	cert: fs.readFileSync('ssl.crt')
 };
 
-https.createServer(sslOptions, conductor.router).listen(port); */
-http.createServer(conductor.router).listen(port);
+https.createServer(sslOptions, conductor.router).listen(port);
+//http.createServer(conductor.router).listen(port);
 sys.log('Listening on http://0.0.0.0:' + port);
