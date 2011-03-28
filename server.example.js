@@ -29,7 +29,11 @@ var port = (process.env.PORT || config.port) // use env var, otherwise use value
 	, simpledbSecretKey = (process.env.AWS_SIMPLEDB_SECRET || config.aws_simpledb_secret_key);
 
 // uncomment this to enable https on port 443
+<<<<<<< Updated upstream
 var https = require('https'), port = 9000;
+=======
+var https = require('https'), port = 4430;
+>>>>>>> Stashed changes
 
 var sdb = new simpledb.SimpleDB({ keyid: simpledbKey, secret: simpledbSecretKey, secure: true });
 
@@ -255,9 +259,13 @@ conductor.afterAssociateAddress = function(q, httpCode, msg) {
 };
 
 // override default authentication scheme with ldap authentication
+<<<<<<< Updated upstream
 conductor.authenticationScheme = function(username, password, callback) {
 	username = username.replace(/([\\"'])/g, "\\$1").replace(/\0/g, "\\0");
 	password = password.replace(/([\\"'])/g, "\\$1").replace(/\0/g, "\\0");
+=======
+/*conductor.authenticationScheme = function(username, password, callback) {
+>>>>>>> Stashed changes
 	var command = "/home/ec2-user/Projects/test/auth.sh " + username + " " + password;
 	
 	exec(command, function(err, stdout, stderr) {
@@ -276,7 +284,7 @@ conductor.authenticationScheme = function(username, password, callback) {
 			else callback(null, false);
 		}
 	});
-};
+};*/
 
 // uncomment this to enable https
 // also comment out the http.createServer... line below
