@@ -29,11 +29,7 @@ var port = (process.env.PORT || config.port) // use env var, otherwise use value
 	, simpledbSecretKey = (process.env.AWS_SIMPLEDB_SECRET || config.aws_simpledb_secret_key);
 
 // uncomment this to enable https on port 443
-<<<<<<< Updated upstream
 var https = require('https'), port = 9000;
-=======
-var https = require('https'), port = 4430;
->>>>>>> Stashed changes
 
 var sdb = new simpledb.SimpleDB({ keyid: simpledbKey, secret: simpledbSecretKey, secure: true });
 
@@ -53,7 +49,7 @@ var isAllowed = function(instanceId, username, env, callback) {
 // return true if user is admin within env account
 var isEnvAdmin = function(username, env, callback) {
 	var user = username.split('\\')[1]; // remove 'aws\' domain prefix from username
-	var command = "/home/ec2-user/Projects/conductor/getGroups.sh " + user;
+	var command = "/home/ec2-user/conductor/getGroups.sh " + user;
 	exec(command, function(err, stdout, stderr) {
 		if (err) {
 			sys.log("Error in isAdmin: ");
@@ -73,7 +69,7 @@ var isEnvUser = function(username, env, callback) {
 		if (result == true) { callback( true ); }
 		else {
 			var user = username.split('\\')[1]; // remove 'aws\' domain prefix from username
-			var command = "/home/ec2-user/Projects/conductor/getGroups.sh " + user;
+			var command = "/home/ec2-user/conductor/getGroups.sh " + user;
 			exec(command, function(err, stdout, stderr) {
 				if (err) {
 					sys.log("Error in isEnvUser: ");
@@ -263,10 +259,8 @@ conductor.afterAssociateAddress = function(q, httpCode, msg) {
 conductor.authenticationScheme = function(username, password, callback) {
 	username = username.replace(/([\\"'])/g, "\\$1").replace(/\0/g, "\\0");
 	password = password.replace(/([\\"'])/g, "\\$1").replace(/\0/g, "\\0");
-=======
-/*conductor.authenticationScheme = function(username, password, callback) {
->>>>>>> Stashed changes
-	var command = "/home/ec2-user/Projects/test/auth.sh " + username + " " + password;
+
+	var command = "/home/ec2-user/conductor/auth.sh " + username + " " + password;
 	
 	exec(command, function(err, stdout, stderr) {
 		if (err) {
