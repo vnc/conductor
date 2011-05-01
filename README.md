@@ -1,3 +1,6 @@
+**CONDUCTOR IS NO LONGER MAINTAINED**
+**See the replacement here: [https://github.com/vnc/runductor](https://github.com/vnc/runductor)**
+
 # Conductor
 
 ## About
